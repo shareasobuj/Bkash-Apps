@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Hind Siliguri', sans-serif;
+}
+
+/* মোবাইল স্ক্রিনের কাস্টম স্ক্রলবার হাইড */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* বাটন ক্লিক করার সাধারণ অ্যাক্টিভ ইফেক্ট */
+button:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+}
+
+/* ==================== TAP & HOLD ANIMATION STRUCTURE ==================== */
+.tap-hold-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px auto;
+}
+
+/* ভেতরের মূল গোল বাটন */
+.tap-hold-btn {
+    width: 90px;
+    height: 90px;
+    background-color: #E2136E;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    z-index: 10;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+/* বাইরের এনিমেটেড প্রোগ্রেস রিং */
+.svg-ring-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 120px;
+    height: 120px;
+    transform: rotate(-90deg); /* প্রোগ্রেস উপর থেকে শুরু করার ট্রিক */
+    pointer-events: none;
+    z-index: 5;
+}
+
+.svg-ring-overlay circle {
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+}
+
+/* পেছনের ব্যাকগ্রাউন্ড আবছা রিং */
+.ring-bg {
+    stroke: #fce7f3;
+}
+
+/* মেইন লোডিং প্রোগ্রেস রিং */
+.ring-progress {
+    stroke: #E2136E;
+    stroke-dasharray: 345; /* বৃত্তের টোটাল পরিধি */
+    stroke-dashoffset: 345; /* শুরুতে প্রোগ্রেস জিরো থাকবে */
+    transition: stroke-dashoffset 3s linear; /* ৩ সেকেন্ড টাইমফ্রেম অরিজিনাল বিকাশ স্টাইল */
+}
+
+/* আঙুল চেপে ধরার সাথে সাথে এই ক্লাস যুক্ত হয়ে রিং ফিলআপ শুরু হবে */
+.holding .ring-progress {
+    stroke-dashoffset: 0;
+}
