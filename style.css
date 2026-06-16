@@ -4,7 +4,7 @@ body {
     font-family: 'Hind Siliguri', sans-serif;
 }
 
-/* মোবাইল স্ক্রিনের কাস্টম স্ক্রলবার হাইড */
+/* কাস্টম স্ক্রলবার হাইড */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
@@ -14,7 +14,6 @@ body {
     scrollbar-width: none;
 }
 
-/* বাটন ক্লিক করার সাধারণ অ্যাক্টিভ ইফেক্ট */
 button:active {
     transform: scale(0.97);
     transition: transform 0.1s ease;
@@ -31,7 +30,6 @@ button:active {
     margin: 10px auto;
 }
 
-/* ভেতরের মূল গোল বাটন */
 .tap-hold-btn {
     width: 90px;
     height: 90px;
@@ -49,14 +47,13 @@ button:active {
     transition: transform 0.2s ease, background-color 0.3s ease;
 }
 
-/* বাইরের এনিমেটেড প্রোগ্রেস রিং */
 .svg-ring-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 120px;
     height: 120px;
-    transform: rotate(-90deg); /* প্রোগ্রেস উপর থেকে শুরু করার ট্রিক */
+    transform: rotate(-90deg);
     pointer-events: none;
     z-index: 5;
 }
@@ -67,20 +64,17 @@ button:active {
     stroke-linecap: round;
 }
 
-/* পেছনের ব্যাকগ্রাউন্ড আবছা রিং */
 .ring-bg {
     stroke: #fce7f3;
 }
 
-/* মেইন লোডিং প্রোগ্রেস রিং */
 .ring-progress {
     stroke: #E2136E;
-    stroke-dasharray: 345; /* বৃত্তের টোটাল পরিধি */
-    stroke-dashoffset: 345; /* শুরুতে প্রোগ্রেস জিরো থাকবে */
-    transition: stroke-dashoffset 3s linear; /* ৩ সেকেন্ড টাইমফ্রেম অরিজিনাল বিকাশ স্টাইল */
+    stroke-dasharray: 345;
+    stroke-dashoffset: 345;
+    transition: stroke-dashoffset 3s linear; /* ৩ সেকেন্ড টাইমিং রুলস */
 }
 
-/* আঙুল চেপে ধরার সাথে সাথে এই ক্লাস যুক্ত হয়ে রিং ফিলআপ শুরু হবে */
 .holding .ring-progress {
     stroke-dashoffset: 0;
 }
