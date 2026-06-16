@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bKash App Master Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-900 md:py-6 min-h-screen flex items-center justify-center">
+
+    <div class="w-full max-w-md bg-white min-h-screen md:min-h-[840px] md:rounded-[36px] shadow-2xl flex flex-col justify-between relative overflow-hidden border-4 border-gray-800">
+        
+        <div id="signup-screen" class="absolute inset-0 bg-white z-50 p-6 flex flex-col justify-between transition-all duration-500 hidden">
+            <div class="space-y-6 mt-6">
+                <div class="flex justify-between items-center">
+                    <span class="text-4xl font-black text-[#E2136E] italic tracking-tighter">bKash</span>
+                    <span class="text-xs bg-pink-50 text-[#E2136E] px-3 py-1 rounded-full font-bold">Registration</span>
+                </div>
+                <div class="space-y-1">
+                    <h2 class="text-2xl font-bold text-gray-800">নতুন অ্যাকাউন্ট তৈরি করুন</h2>
+                    <p class="text-xs text-gray-400">তথ্যগুলো সঠিকভাবে পূরণ করে রেজিস্টার করুন</p>
+                </div>
+                <div class="space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1">আপনার নাম</label>
+                        <input type="text" id="reg-name" placeholder="যেমন: মোঃ শারিয়া সবুজ" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1">মোবাইল নম্বর (১১ ডিজিট)</label>
+                        <input type="text" inputmode="numeric" id="reg-phone" maxlength="11" placeholder="যেমন: 016XXXXXXXX" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 font-mono tracking-wider text-sm input-numeric-only">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1">বিকাশ পিন সেট করুন (৫ ডিজিট)</label>
+                        <input type="password" inputmode="numeric" id="reg-pin" maxlength="5" placeholder="•••••" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 font-mono tracking-widest text-lg input-numeric-only">
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <button type="button" onclick="handleSignUp(event)" class="w-full py-4 bg-[#E2136E] text-white font-bold rounded-xl shadow-lg shadow-pink-200 text-sm">রেজিস্ট্রেশন সম্পন্ন করুন</button>
+                <p class="text-center text-xs text-gray-500">ইতিমধ্যে অ্যাকাউন্ট আছে? <span onclick="goToLoginScreen()" class="text-[#E2136E] font-bold cursor-pointer hover:underline">লগইন করুন</span></p>
+            </div>
+        </div>
+
+        <div id="login-screen" class="absolute inset-0 bg-white z-40 p-6 flex flex-col justify-between transition-all duration-500 hidden">
+            <div class="space-y-8 mt-12">
+                <div class="flex justify-between items-center">
+                    <span class="text-4xl font-black text-[#E2136E] italic tracking-tighter">bKash</span>
+                    <span class="text-xs bg-pink-50 text-[#E2136E] px-3 py-1 rounded-full font-bold">Secure Access</span>
+                </div>
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-bold text-gray-800">বিকাশ অ্যাকাউন্টে লগইন করুন</h2>
+                    <p class="text-xs text-gray-400">আপনার ৫ ডিজিটের পিন নম্বরটি প্রবেশ করান</p>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1">মোবাইল নম্বর</label>
+                        <input type="text" inputmode="numeric" id="login-phone" maxlength="11" class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl font-mono tracking-wider text-sm text-gray-500 cursor-not-allowed" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1">বিকাশ পিন (৫ ডিজিট)</label>
+                        <input type="password" inputmode="numeric" id="login-pin" maxlength="5" placeholder="•••••" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 font-mono tracking-widest text-lg input-numeric-only">
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <button type="button" onclick="handleLogin(event)" class="w-full py-4 bg-[#E2136E] text-white font-bold rounded-xl shadow-lg shadow-pink-200 text-sm">পরবর্তী</button>
+                <p class="text-center text-xs text-gray-500">অন্য অ্যাকাউন্ট ব্যবহার করবেন? <span onclick="resetAppMemory()" class="text-red-500 font-bold cursor-pointer hover:underline">নতুন করে সাইন-আপ</span></p>
+            </div>
+        </div>
+
+        <div id="app-workspace" class="flex-1 flex flex-col justify-between hidden">
+            <header class="bg-[#E2136E] text-white pt-4 px-4 pb-3 rounded-b-3xl shadow-lg sticky top-0 z-40">
+                <div class="flex justify-between items-center mb-3">
+                    <div class="flex items-center gap-2.5">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=60" alt="User" class="w-9 h-9 rounded-full border-2 border-white object-cover shadow">
+                        <div>
+                            <h2 class="text-xs font-bold" id="user-name-display">লোডিং...</h2>
+                            <p class="text-[9px] text-pink-100 flex items-center gap-1"><i class="fa-solid fa-shield-halved text-yellow-300"></i> ট্রাস্টেড অ্যাকাউন্ট</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="toggleInbox()" class="relative p-1 text-lg">
+                            <i class="fa-regular fa-bell"></i>
+                        </button>
+                        <span class="text-xl font-black italic tracking-tighter cursor-pointer" onclick="logout()">bKash</span>
+                    </div>
+                </div>
+
+                <div class="bg-[#B00E54] rounded-xl p-3 flex justify-between items-center cursor-pointer select-none" id="balance-tap-box">
+                    <div>
+                        <p class="text-[10px] text-pink-100 uppercase tracking-wider">অ্যাকাউন্ট ব্যালেন্স</p>
+                        <h3 class="text-lg font-bold font-mono mt-0.5 tracking-wide" id="balance-text-node">৳ ••••••</h3>
+                    </div>
+                    <span class="text-[10px] bg-white text-[#E2136E] px-3 py-1.5 rounded-full font-bold shadow flex items-center gap-1" id="balance-status-btn">
+                        <i class="fa-solid fa-circle-dot text-xs"></i> ব্যালেন্স দেখুন
+                    </span>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4 pb-20" id="main-scroll-view">
+                
+                <div class="bg-white rounded-2xl p-3 border border-gray-100 shadow-sm grid grid-cols-4 gap-y-5 gap-x-2">
+                    
+                    <button type="button" onclick="triggerService('sendMoney')" class="flex flex-col items-center">
+                        <div class="w-11 h-11 bg-pink-50 text-[#E2136E] rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-paper-plane"></i></div>
+                        <span class="text-[10px] font-bold mt-1.5 text-gray-700">সেন্ড মানি</span>
+                    </button>
+                    
+                    <button type="button" onclick="triggerService('recharge')" class="flex flex-col items-center">
+                        <div class="w-11 h-11 bg-pink-50 text-[#E2136E] rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-mobile-screen"></i></div>
+                        <span class="text-[10px] font-bold mt-1.5 text-gray-700">মোবাইল রিচার্জ</span>
+                    </button>
+                    
+                    <button type="button" onclick="triggerService('cashOut')" class="flex flex-col items-center">
+                        <div class="w-11 h-11 bg-pink-50 text-[#E2136E] rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                        <span class="text-[10px] font-bold mt-1.5 text-gray-700">ক্যাশ আউট</span>
+                    </button>
+                    
+                    <button type="button" onclick="triggerService('payment')" class="flex flex-col items-center">
+                        <div class="w-11 h-11 bg-pink-50 text-[#E2136E] rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-bag-shopping"></i></div>
+                        <span class="text-[10px] font-bold mt-1.5 text-gray-700">পেমেন্ট</span>
+                    </button>
+
+                    <button type="button" onclick="triggerService('addMoney')" class="flex flex-col items-center">
+                        <div class="w-11 h-11 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-wallet"></i></div>
+                        <span class="text-[10px] font-bold mt-1.5 text-gray-700">অ্যাড মানি</span>
+                    </button>
+
+                    <button type="button" onclick="triggerService('utilityBill')" class="flex flex-col items-center">
+                        <div class="w-11 h-11 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-lightbulb"></i></div>
+                        <span class="text-[10px] font-bold mt-1.5 text-gray-700">পে বিল</span>
+                    </button>
+
+                    <button type="button" onclick="triggerService('getLoan')" class="flex flex-col items-center">
+                        <div class="w-11 h-11 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                        <span class="text-[10px] font-bold mt-1.5 text-gray-700">লোন</span>
+                    </button>
+
+                    <button type="button" onclick="triggerService('dpsSavings')" class="flex flex-col items-center">
+                        <div class="w-11 h-11 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-piggy-bank"></i></div>
+                        <span class="text-[10px] font-bold mt-1.5 text-gray-700">সেভিংস/DPS</span>
+                    </button>
+
+                    <button type="button" onclick="triggerService('remittance')" class="flex flex-col items-center">
+                        <div class="w-11 h-11 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-earth-americas"></i></div>
+                        <span class="text-[10px] font-bold mt-1.5 text-gray-700">রেমিট্যান্স</span>
+                    </button>
+
+                    <button type="button" onclick="triggerService('donation')" class="flex flex-col items-center">
+                        <div class="w-11 h-11 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                        <span class="text-[10px] font-bold mt-1.5 text-gray-700">দান</span>
+                    </button>
+
+                </div>
+
+                <div id="statement-anchor">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2.5">সর্বশেষ স্টেটমেন্ট লেনদেন</h3>
+                    <div class="space-y-2.5" id="transaction-log-container">
+                        <div class="flex justify-between items-center p-3.5 bg-gray-50 rounded-2xl border border-gray-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-sm"><i class="fa-solid fa-arrow-down"></i></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-800">অ্যাকাউন্ট বোনাস (নতুন ইউজার)</p>
+                                    <p class="text-[9px] text-gray-400">আজ • TrxID: BK9281X0</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-black text-green-600">+৳৫০.০০</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="bg-white border-t border-gray-100 grid grid-cols-3 py-3 text-center text-gray-400 relative z-40">
+                <button type="button" onclick="navSwitch('home')" id="nav-btn-home" class="text-[#E2136E] flex flex-col items-center gap-0.5">
+                    <i class="fa-solid fa-house-chimney text-lg"></i><span class="text-[9px] font-bold">হোম</span>
+                </button>
+                <button type="button" onclick="navSwitch('statement')" id="nav-btn-statement" class="flex flex-col items-center gap-0.5">
+                    <i class="fa-solid fa-rectangle-list text-lg"></i><span class="text-[9px] font-bold">স্টেটমেন্ট</span>
+                </button>
+                <button type="button" onclick="toggleInbox()" class="flex flex-col items-center gap-0.5">
+                    <i class="fa-solid fa-bell text-lg"></i><span class="text-[9px] font-bold">ইনবক্স</span>
+                </button>
+            </footer>
+        </div>
+
+        <div id="action-modal" class="absolute inset-0 bg-black/60 z-50 hidden flex items-end">
+            <div class="w-full bg-white rounded-t-[32px] p-6 space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 id="modal-title-text" class="text-sm font-bold text-gray-800">অ্যাকশন</h3>
+                    <button type="button" onclick="closeActionModal()" class="w-7 h-7 bg-gray-100 rounded-full text-gray-400 flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+                </div>
+                
+                <div class="space-y-3.5">
+                    <input type="hidden" id="current-action-type">
+                    
+                    <div id="target-field-wrapper">
+                        <label id="dynamic-input-label" class="block text-[11px] font-bold text-gray-500 mb-1">নম্বর</label>
+                        <input type="text" id="form-target-number" placeholder="১১ ডিজিটের মোবাইল নম্বর" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-xs font-mono">
+                    </div>
+                    
+                    <div>
+                        <label id="dynamic-amount-label" class="block text-[11px] font-bold text-gray-500 mb-1">টাকার পরিমাণ (৳)</label>
+                        <input type="number" id="form-amount" placeholder="৳ সর্বনিম্ন ১০ টাকা" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-xs font-mono">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 mb-1">আপনার ৫ ডিজিটের পিন নম্বর</label>
+                        <input type="password" inputmode="numeric" id="form-secure-pin" maxlength="5" placeholder="•••••" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-xs tracking-widest font-mono input-numeric-only">
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center pt-2 space-y-2">
+                        <div class="tap-hold-container" id="tap-hold-box">
+                            <svg class="svg-ring-overlay">
+                                <circle class="ring-bg" cx="60" cy="60" r="55"></circle>
+                                <circle class="ring-progress" cx="60" cy="60" r="55"></circle>
+                            </svg>
+                            <div class="tap-hold-btn" id="main-holding-trigger">
+                                <i class="fa-solid fa-arrow-right text-xl"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-gray-500 tracking-wide text-center" id="hold-instruction-text">
+                            নিশ্চিত করতে বোতামটি <span class="text-[#E2136E]">চেপে ধরে রাখুন</span>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="inbox-panel" class="absolute inset-x-0 bottom-0 bg-white rounded-t-3xl border-t shadow-2xl z-50 p-5 space-y-3.5 hidden">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="text-sm font-bold text-gray-800">নোটিফিকেশন ইনবক্স</h3>
+                <button type="button" onclick="toggleInbox()" class="text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-3 bg-pink-50 rounded-xl border-l-4 border-[#E2136E]">
+                <p class="text-xs font-bold text-gray-800">সিস্টেম সচল রয়েছে!</p>
+                <p class="text-[10px] text-gray-500 mt-0.5">বিকাশ অল-ইন-ওয়ান গেটওয়ে সফলভাবে সংযুক্ত।</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+                      </html>
