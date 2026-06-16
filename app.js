@@ -1,12 +1,10 @@
-// কোর অ্যাপ্লিকেশন মেমোরি ডাটাবেস
+// গ্লোবাল স্টেট এবং টাইমার ভেরিয়েবলস
 let walletBalance = 5000.00; 
 let isBalanceVisible = false;
-
-// ট্যাপ অ্যান্ড হোল্ড ইঞ্জিনের গ্লোবাল টাইমার ট্র্যাকার
 let holdTimer = null;
-const holdDuration = 3000; // ঠিক ৩ সেকেন্ড বা ৩০০০ মিলি-সেকেন্ড
+const holdDuration = 3000; 
 
-// ==================== AUTO-LOGIN LOGIC (SIGN-UP BYPASS) ====================
+// ==================== APP INITIALIZATION ENGINE ====================
 document.addEventListener('DOMContentLoaded', () => {
     // নিউমেরিক ফিল্টার এক্টিভেশন
     const numericInputs = document.querySelectorAll('.input-numeric-only');
@@ -16,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // ট্যাপ-হোল্ড বাটনের সাথে মাউস ও টাচ ইভেন্ট লিসেনার যুক্ত করা
+    // ট্যাপ-হোল্ড বাটন ইভেন্ট বাইন্ডিং
     const holdTriggerBtn = document.getElementById('main-holding-trigger');
     if(holdTriggerBtn) {
         holdTriggerBtn.addEventListener('mousedown', startHold);
@@ -26,19 +24,31 @@ document.addEventListener('DOMContentLoaded', () => {
         holdTriggerBtn.addEventListener('touchend', cancelHold);
     }
 
-    // অটো-লগইন ইঞ্জিন চেক
+    // ব্রাউজারে অ্যাকাউন্ট এবং লাইভ ব্যালেন্স চেক মেকানিজম
     const storedUser = localStorage.getItem('bkash_user');
-    if (storedUser) {
-        // যদি ডাটাবেজে ইউজার একাউন্ট থাকে, সরাসরি ড্যাশবোর্ড লোড হবে (সাইন আপ সম্পূর্ণ স্কিপ)
-        const userObj = JSON.parse(storedUser);
-        openDashboard(userObj.name);
+    const storedBalance = localStorage.getItem('bkash_balance');
+
+    if (storedBalance !== null) {
+        walletBalance = parseFloat(storedBalance); // মেমোরি থেকে ব্যালেন্স রিলোড
     } else {
-        // যদি একদম নতুন ইউজার হয়, তবেই কেবল ফার্স্ট টাইম সাইন-আপ উইন্ডো দেখাবে
+        localStorage.setItem('bkash_balance', walletBalance.toString());
+    }
+
+    // ট্রানজেকশন হিস্ট্রি রেন্ডার
+    renderTransactionHistory();
+
+    if (storedUser) {
+        // অ্যাকাউন্ট থাকলে সরাসরি লগইন স্ক্রিন ওপেন হবে (নাম্বার ফিক্সড থাকবে)
+        const userObj = JSON.parse(storedUser);
+        document.getElementById('login-phone').value = userObj.phone;
+        goToLoginScreen();
+    } else {
+        // কোনো ডেটা না থাকলে ফার্স্ট টাইম সাইন-আপ উইন্ডো আসবে
         document.getElementById('signup-screen').classList.remove('hidden');
     }
 });
 
-// ১. রেজিস্ট্রেশন কন্ট্রোলার মডিউল
+// ১. রেজিস্ট্রেশন কন্ট্রোলার (সাইন আপ)
 function handleSignUp(e) {
     if (e) e.preventDefault();
     
@@ -53,9 +63,12 @@ function handleSignUp(e) {
 
     const userData = { name: name, phone: phone, pin: pin };
     localStorage.setItem('bkash_user', JSON.stringify(userData));
+    localStorage.setItem('bkash_balance', '5000.00'); // নতুন অ্যাকাউন্টে ডিফল্ট টাকা
+    walletBalance = 5000.00;
 
-    alert("🎉 সাইন-আপ সফল হয়েছে! ড্যাশবোর্ডে প্রবেশ করা হচ্ছে।");
-    openDashboard(name);
+    alert("🎉 সাইন-আপ সফল হয়েছে! অনুগ্রহ করে এবার পিন দিয়ে লগইন করুন।");
+    document.getElementById('login-phone').value = phone;
+    goToLoginScreen();
 }
 
 // ২. সিকিউর পিন লগইন ভ্যালিডেশন
@@ -80,7 +93,7 @@ function openDashboard(userName) {
     document.getElementById('app-workspace').classList.remove('hidden');
 }
 
-// ৩. ব্যালেন্স ট্যাপ অ্যান্ড হাইড রিভিল ইঞ্জিন
+// ৩. ব্যালেন্স ট্যাপ রিভিল ইঞ্জিন
 document.getElementById('balance-tap-box').addEventListener('click', () => {
     if (isBalanceVisible) return;
 
@@ -100,12 +113,11 @@ document.getElementById('balance-tap-box').addEventListener('click', () => {
     }, 3500);
 });
 
-// ৪. মাল্টি-ফিচার ডাইনামিক সার্ভিস গেটওয়ে (১০টি এডভান্সড মডিউল)
+// ৪. মাল্টি-ফিচার ডাইনামিক মডাল লোডার
 function triggerService(type) {
     document.getElementById('action-modal').classList.remove('hidden');
     document.getElementById('current-action-type').value = type;
     
-    // ফিল্ড রি-সেট
     document.getElementById('target-field-wrapper').classList.remove('hidden');
     document.getElementById('form-target-number').value = "";
     document.getElementById('form-amount').value = "";
@@ -128,7 +140,6 @@ function triggerService(type) {
     document.getElementById('dynamic-input-label').textContent = actionSchemas[type].label;
     document.getElementById('form-target-number').placeholder = actionSchemas[type].placeholder;
     
-    // বিশেষ কাস্টমাইজেশন: লোনের ক্ষেত্রে ব্যালেন্স চেক উল্টো এবং ইনপুট টেক্সট মডিফিকেশন
     if(type === 'getLoan') {
         document.getElementById('dynamic-amount-label').textContent = "আবেদনের পরিমাণ (সর্বোচ্চ ৳২০,০০০)";
         document.getElementById('form-amount').placeholder = "৳ লোন অ্যামাউন্ট লিখুন";
@@ -166,7 +177,6 @@ function startHold(e) {
         return;
     }
     
-    // লোন ও অ্যাড মানি বাদে অন্য ফিচারের জন্য সাধারণ ব্যালেন্স চেক
     if (actionType !== 'getLoan' && actionType !== 'addMoney' && amountValue > walletBalance) {
         alert("❌ পর্যাপ্ত ব্যালেন্স নেই!");
         cancelHold();
@@ -189,7 +199,7 @@ function startHold(e) {
 
 function cancelHold() {
     clearTimeout(holdTimer);
-    document.getElementById('tap-hold-box').classList.remove('hidden') && document.getElementById('tap-hold-box').classList.remove('holding');
+    document.getElementById('tap-hold-box').classList.remove('holding');
     document.getElementById('hold-instruction-text').innerHTML = `নিশ্চিত করতে বোতামটি <span class="text-[#E2136E]">চেপে ধরে রাখুন</span>`;
 }
 
@@ -197,7 +207,6 @@ function executeFinalTransaction(actionType, targetNum, amountValue) {
     clearTimeout(holdTimer);
     document.getElementById('tap-hold-box').classList.remove('holding');
     
-    // ব্যালেন্স ক্যালকুলেশন ইঞ্জিন (লোন এবং অ্যাড মানি অ্যাকাউন্টে যোগ হবে, বাকিগুলো বিয়োগ হবে)
     let isCredit = false;
     if (actionType === 'getLoan' || actionType === 'addMoney') {
         walletBalance += amountValue;
@@ -206,11 +215,13 @@ function executeFinalTransaction(actionType, targetNum, amountValue) {
         walletBalance -= amountValue;
     }
 
+    // ব্রাউজারের পার্মানেন্ট মেমোরিতে লাইভ ব্যালেন্স সেভ করা (রিফ্রেশ প্রটেকশন)
+    localStorage.setItem('bkash_balance', walletBalance.toString());
+
     if (isBalanceVisible) {
         document.getElementById('balance-text-node').textContent = `৳ ${walletBalance.toLocaleString('bn-BD', { minimumFractionDigits: 2 })}`;
     }
 
-    // ফিচার স্ট্রিং ডিক্লেয়ারেশন
     const serviceStrings = { 
         sendMoney: "সেন্ড মানি", recharge: "মোবাইল রিচার্জ", cashOut: "ক্যাশ আউট", 
         payment: "পেমেন্ট", addMoney: "অ্যাড মানি", utilityBill: "বিদ্যুৎ বিল", 
@@ -219,29 +230,18 @@ function executeFinalTransaction(actionType, targetNum, amountValue) {
     
     const trxIdGenerated = "BK" + Math.random().toString(36).substr(2, 7).toUpperCase();
 
-    // ট্রানজেকশন হিস্ট্রি রো মেকার
-    const logRow = document.createElement('div');
-    logRow.className = "flex justify-between items-center p-3.5 bg-white rounded-2xl border border-gray-100 shadow-sm";
-    
-    const iconClass = isCredit ? "bg-green-100 text-green-600 fa-arrow-down" : "bg-red-100 text-red-500 fa-arrow-up-right-from-square";
-    const amountSign = isCredit ? `+৳${amountValue.toFixed(2)}` : `-৳${amountValue.toFixed(2)}`;
-    const amountColor = isCredit ? "text-green-600" : "text-red-500";
+    // ট্রানজেকশন অবজেক্ট তৈরি এবং লোকাল স্টোরেজে পুশ
+    const transactionItem = {
+        type: serviceStrings[actionType],
+        target: targetNum,
+        amount: amountValue,
+        trxId: trxIdGenerated,
+        isCredit: isCredit,
+        time: "এখনই"
+    };
 
-    logRow.innerHTML = `
-        <div class="flex items-center gap-3">
-            <div class="w-9 h-9 ${iconClass.split(' ')[0]} ${iconClass.split(' ')[1]} rounded-xl flex items-center justify-center text-sm"><i class="fa-solid ${iconClass.split(' ')[2]}"></i></div>
-            <div>
-                <p class="text-xs font-bold text-gray-800">${serviceStrings[actionType]} (${targetNum})</p>
-                <p class="text-[9px] text-gray-400">এখনই • TrxID: ${trxIdGenerated}</p>
-            </div>
-        </div>
-        <span class="text-xs font-black ${amountColor}">${amountSign}</span>
-    `;
-    
-    const container = document.getElementById('transaction-log-container');
-    container.insertBefore(logRow, container.firstChild);
+    saveTransactionToStorage(transactionItem);
 
-    // সাকসেস ইউজার ইন্টারফেস ফিডব্যাক
     const holdTriggerBtn = document.getElementById('main-holding-trigger');
     holdTriggerBtn.innerHTML = `<i class="fa-solid fa-check text-2xl"></i>`;
     holdTriggerBtn.style.backgroundColor = "#22c55e"; 
@@ -255,7 +255,65 @@ function executeFinalTransaction(actionType, targetNum, amountValue) {
     }, 1500);
 }
 
-// ওয়ান-ক্লিক মেমোরি ফ্ল্যাশ (অন্য অ্যাকাউন্ট দিয়ে টেস্ট করার জন্য)
+// ৫. ট্রানজেকশন লোকাল স্টোরেজ হ্যান্ডলার
+function saveTransactionToStorage(item) {
+    let history = localStorage.getItem('bkash_history');
+    if (history === null) {
+        history = [];
+    } else {
+        history = JSON.parse(history);
+    }
+    history.unshift(item); // নতুন ট্রানজেকশন সবার উপরে রাখার ট্রিক
+    localStorage.setItem('bkash_history', JSON.stringify(history));
+    renderTransactionHistory();
+}
+
+function renderTransactionHistory() {
+    const container = document.getElementById('transaction-log-container');
+    if(!container) return;
+    
+    container.innerHTML = ""; // আগের ভিউ পরিষ্কার করা
+    
+    let history = localStorage.getItem('bkash_history');
+    if (history === null || JSON.parse(history).length === 0) {
+        container.innerHTML = `
+            <div class="flex justify-between items-center p-3.5 bg-gray-50 rounded-2xl border border-gray-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-sm"><i class="fa-solid fa-arrow-down"></i></div>
+                    <div>
+                        <p class="text-xs font-bold text-gray-800">অ্যাকাউন্ট বোনাস (নতুন ইউজার)</p>
+                        <p class="text-[9px] text-gray-400">আজ • TrxID: BK9281X0</p>
+                    </div>
+                </div>
+                <span class="text-xs font-black text-green-600">+৳৫০.০০</span>
+            </div>`;
+        return;
+    }
+
+    history = JSON.parse(history);
+    history.forEach(item => {
+        const logRow = document.createElement('div');
+        logRow.className = "flex justify-between items-center p-3.5 bg-white rounded-2xl border border-gray-100 shadow-sm mb-2";
+        
+        const iconClass = item.isCredit ? "bg-green-100 text-green-600 fa-arrow-down" : "bg-red-100 text-red-500 fa-arrow-up-right-from-square";
+        const amountSign = item.isCredit ? `+৳${item.amount.toFixed(2)}` : `-৳${item.amount.toFixed(2)}`;
+        const amountColor = item.isCredit ? "text-green-600" : "text-red-500";
+
+        logRow.innerHTML = `
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 ${iconClass.split(' ')[0]} ${iconClass.split(' ')[1]} rounded-xl flex items-center justify-center text-sm"><i class="fa-solid ${iconClass.split(' ')[2]}"></i></div>
+                <div>
+                    <p class="text-xs font-bold text-gray-800">${item.type} (${item.target})</p>
+                    <p class="text-[9px] text-gray-400">${item.time} • TrxID: ${item.trxId}</p>
+                </div>
+            </div>
+            <span class="text-xs font-black ${amountColor}">${amountSign}</span>
+        `;
+        container.appendChild(logRow);
+    });
+}
+
+// ৬. নেভিগেশন ও ব্রাউজার মেমোরি ফ্লাশ
 function resetAppMemory() {
     if(confirm("আপনি কি নিশ্চিত যে বর্তমান অ্যাকাউন্ট ডাটা ব্রাউজার থেকে মুছে ফেলবেন?")) {
         localStorage.clear();
@@ -295,4 +353,4 @@ function navSwitch(target) {
     } else {
         document.getElementById('main-scroll-view').scrollTo({ top: 0, behavior: 'smooth' });
     }
-        }
+}
